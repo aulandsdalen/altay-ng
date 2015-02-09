@@ -47,12 +47,17 @@ class AltayNG < Sinatra::Application
 	get '/system.json' do
 		json :altay_version_full => $ALTAY_APP_VERSION_FULL,
 			 :altay_version_short => $ALTAY_APP_VERSION_SHORT,
+			 :altay_version_commit => $ALTAY_APP_VERSION_COMMIT,
 			 :os_short => os_short_name,
 			 :os_full => os_full_name,
 			 :os_logo_image_link => "/images/os-linux.png",
 			 :ruby_version => RUBY_VERSION + " " + RUBY_PLATFORM,
 			 :arch => os_arch,
 			 :cpu_name => cpu_model
+	end
+	get '/software.json' do
+		# TODO
+		# separate system data and software data
 	end
 	get '/load.json' do 
 		json :cpu => usage.uw_cpuused,
