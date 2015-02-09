@@ -2,17 +2,32 @@ require 'sinatra'
 require 'sinatra/json'
 #require 'usagewatch' 
 
+
 set :bind, '0.0.0.0'
+#enable :sessions
+
 class AltayNG < Sinatra::Application
+	helpers do
+		def login?
+			if session[:username].nil?
+				return false
+			else
+				return true
+			end
+		end
+		def username
+			return session[:username]
+		end
+		def html(view)
+			File.read(File.join('public', "#{view.to_s}.html"))
+		end
+	end
 	usage = Usagewatch
 	sysinfo = SysInfo.new
-	os_short_name = %x(uname).strip
-	os_full_name = %x(uname -rs).strip
-	os_arch = %x(uname -m).strip
-	cpu_model = Sys::CPU.processors[0].model_name.strip
-	before '/admin/*' do 
-		authenticate!
-	end
+	os_short_name = %x(uname).chomp
+	os_full_name = %x(uname -rs).chomp
+	os_arch = %x(uname -m).chomp
+	cpu_model = Sys::CPU.processors[0].model_name.chomp
 	get '/' do
 		html :index
 	end
@@ -49,12 +64,25 @@ class AltayNG < Sinatra::Application
 		json :sessions_count => %x(who | wc -l).strip,
 			 :www_user => %x(whoami).strip
 	end
+
+	##################
+	# authentication #
+	##################
+	get '/login/:username' do 
+		session[:username] = params[:username]
+		redirect '/'
+	end
+	get '/logout' do
+		session[:username] = nil
+		redirect '/'
+	end
+	get '/user' do
+		json :logged_in => login?,
+			 :username => username
+	end
 	get '/reboot.action' do 
 		#todo: auth
 		#%x(reboot)
 		json :result => "not authorized"
-	end
-	def html(view)
-		File.read(File.join('public', "#{view.to_s}.html"))
 	end
 end
