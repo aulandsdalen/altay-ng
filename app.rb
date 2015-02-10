@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'sinatra/json'
 require 'rack-flash'
-#require 'usagewatch' 
 
 
 set :bind, '0.0.0.0'
@@ -26,6 +25,10 @@ class AltayNG < Sinatra::Application
 			File.read(File.join('public', "#{view.to_s}.html"))
 		end
 	end
+	login_data = {
+		"username" => "user",
+		"password" => "secret"
+	}
 	usage = Usagewatch
 	sysinfo = SysInfo.new
 	os_short_name = %x(uname).chomp
@@ -77,9 +80,29 @@ class AltayNG < Sinatra::Application
 	##################
 	# authentication #
 	##################
-	get '/login/:username' do 
-		session[:username] = params[:username]
-		redirect '/'
+	get '/login' do
+		haml :login
+	end
+	#get '/login/:username' do 
+	#	session[:username] = params[:username]
+	#	redirect '/'
+	#end
+	post '/authorize' do
+		if params[:username] == login_data["username"]
+			if params[:password] == login_data["password"]
+				puts "successful auth!"
+				session[:username] = params[:username]
+				redirect '/'
+			else
+				puts "wrong password"
+				flash[:error] = "Wrong password"
+				redirect '/login'
+			end
+		else
+			puts "wrong login"
+			flash[:error] = "Wrong login"
+			redirect '/login'
+		end
 	end
 	get '/logout' do
 		session[:username] = nil
@@ -93,6 +116,8 @@ class AltayNG < Sinatra::Application
 		#todo: auth
 		#%x(reboot)
 		#flash[:error] = "Log in to perform this action"
-		json :result => "not authorized"
+		json :result => "not authorized",
+			 :code => 403,
+			 :human_readable => "Log in to perform this action"
 	end
 end

@@ -4,70 +4,6 @@
 	<meta charset="utf8">
 	<link rel="stylesheet" href="/css/index.css">
 	<style>
-	.nojsbanner {
-		width: 100%;
-		background-color: #ccc;
-		text-align: center;
-		padding-top: auto;
-		padding-bottom: auto;
-		z-index: 9999;
-	}
-	.nojsbanner > p {
-		font-size: 36pt;
-		font-family: Helvetica, Arial, sans-serif;
-		font-weight: bold;
-	}
-	.block {
-		padding: 5pt;
-		border: 1px solid #666;
-		border-radius: 5px;
-		width: auto;
-		display: inline-block;
-		vertical-align: middle;
-		background-color: #ccc;
-		margin-bottom: 10px;
-	}
-	.small {
-		height: 130px;
-	}
-	.large {
-		height: 280px;
-	}
-	.clear {
-	  	clear: both;
-	  	display: block;
-	  	overflow: hidden;
-	  	visibility: hidden;
-		width: 0;
-		height: 0;
-	}
-	.monospace {
-		font-family: monospace;
-	}
-	.sectionheader {
-		margin: 0;
-		font-size: small;
-		font-weight: bolder;
-	}
-	#alert {
-		position: absolute;
-		width: 99%;
-		height: 98%;
-		background-color: #ffbcad;
-		z-index: 6666;
-		text-align: center;
-		font-size: x-large;
-		font-family: sans-serif;
-	}
-	#alert > p {
-		margin-top: 25%;
-	}
-	.subheader {
-		font-size: smaller;
-		font-family: Helvetica, Arial, sans-serif;
-		margin: 0;
-		margin-top: 5pt;
-	}
 	</style>
 	<title></title>
 </head>
@@ -79,6 +15,7 @@
 	<p class="name"></p>
 	<p class="osv"></p>
 	<p>Ruby <span id="ruby_version"></span></p>
+	<p>Commit: <span id="altay_commit"></span></p>
 	</div>
 		<div class="charts emerge large block">
 		<p class="sectionheader">Performance charts</p>
@@ -112,6 +49,7 @@
 	</div>
 	<div class="control emerge small block">
 		<p class="sectionheader">Controls</p>
+		<p><a href="/login">Log in</a></p>
 		<p class="action"><a href="#" id="rebootAction">Reboot</a></p>
 	</div>
 	</div>
@@ -121,9 +59,9 @@
 </body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
 <script src="http://yastatic.net/jquery/2.1.3/jquery.min.js"></script>
-<script src="/js/emerge.js"></script>
 <script type="text/javascript" src="/js/smoothie.js"></script>
 <script>
+getPermanentParameters();
 var cpuSmoothie = new SmoothieChart({grid:{sharpLines:true},labels:{disabled:false},maxValue:100,minValue:0});
 var ramSmoothie = new SmoothieChart({grid:{sharpLines:true},labels:{disabled:false},maxValue:100,minValue:0});
 var cpu_line = new TimeSeries();
@@ -131,11 +69,10 @@ var ram_line = new TimeSeries();
 cpuSmoothie.streamTo(document.getElementById("cpu_usage_graph"), 1000);
 ramSmoothie.streamTo(document.getElementById("ram_usage_graph"),1000);
 updateMeters();
-getPermanentParameters();
 function rebootMachine() {
 	$.get("/reboot.action",function(data){
 		if(data.result === 'not authorized')
-			alert("Authorize to perform this action");
+			alert(data.human_readable);
 	});
 }
 function display_alert(text) {
@@ -147,11 +84,9 @@ function getPermanentParameters() { //get and display static parameters once
 		$(".osv").html('<img src='+data.os_logo_image_link+' alt="" class="os_image">');
 		$(".name").text(data.altay_version_full);
 		$("#ruby_version").text(data.ruby_version);
+		$("#altay_commit").text(data.altay_version_commit);
 		$("#cpu_name_data").text(data.cpu_name);
 	});	
-	/*$.getJSON("/sys.pl", function(data){
-		$("#cpu_name_data").text(data.cpu_name);
-	});*/
 }
 window.setInterval(updateMeters, 1000); //update every 1000 msec
 function updateMeters() {
