@@ -30,11 +30,21 @@ class AltayNG < Sinatra::Application
 		"password" => "secret"
 	}
 	usage = Usagewatch
+	@x = 'test'
 	sysinfo = SysInfo.new
 	os_short_name = %x(uname).chomp
 	os_full_name = %x(uname -rs).chomp
 	os_arch = %x(uname -m).chomp
 	cpu_model = Sys::CPU.processors[0].model_name.chomp
+	get '/new' do
+		haml :index, :locals => {:os_full_name => os_full_name, 
+			:os_short_name => os_short_name, 
+			:os_arch => os_arch, 
+			:cpu_model => cpu_model, 
+			:total_ram => (%x(free).split(" ")[7].to_f/1024).to_i,
+			:uptime => IO.read('/proc/uptime').split[0].to_i}
+	end
+
 	get '/' do
 		html :index
 	end

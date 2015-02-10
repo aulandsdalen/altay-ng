@@ -1,3 +1,6 @@
+- if flash[:error]
+	%p.error
+		= flash[:error]
 %div#login_wrapper
 	%form(action = "/authorize" method = "post")
 		%div
