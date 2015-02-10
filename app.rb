@@ -1,19 +1,23 @@
 require 'sinatra'
 require 'sinatra/json'
+require 'rack-flash'
 #require 'usagewatch' 
 
 
 set :bind, '0.0.0.0'
-#enable :sessions
+enable :sessions
+
 
 class AltayNG < Sinatra::Application
+	use Rack::Flash
 	helpers do
-		def login?
+		def logged_in?
 			if session[:username].nil?
 				return false
 			else
 				return true
 			end
+			#return !session[:username].nil?
 		end
 		def username
 			return session[:username]
@@ -66,8 +70,8 @@ class AltayNG < Sinatra::Application
 			 :uptime => IO.read('/proc/uptime').split[0].to_i
 	end
 	get '/user.json' do 
-		json :sessions_count => %x(who | wc -l).strip,
-			 :www_user => %x(whoami).strip
+		json :sessions_count => %x(who | wc -l).chomp,
+			 :www_user => %x(whoami).chomp
 	end
 
 	##################
@@ -82,12 +86,13 @@ class AltayNG < Sinatra::Application
 		redirect '/'
 	end
 	get '/user' do
-		json :logged_in => login?,
+		json :logged_in => logged_in?,
 			 :username => username
 	end
 	get '/reboot.action' do 
 		#todo: auth
 		#%x(reboot)
+		#flash[:error] = "Log in to perform this action"
 		json :result => "not authorized"
 	end
 end
