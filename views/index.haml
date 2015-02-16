@@ -4,7 +4,9 @@
 			%p.sectionheader Environment info
 			%p.name= $ALTAY_APP_VERSION_FULL
 			%p.osv= os_full_name
-			%p#ruby_version= RUBY_VERSION
+			%p#ruby_version
+				Ruby
+				= RUBY_VERSION
 			%p 
 				Commit
 				%span#commit_id= $ALTAY_APP_VERSION_COMMIT
@@ -28,6 +30,7 @@
 				Uptime:
 				%span#uptime_data= uptime
 		%div.small.block.load
+			%p.sectionheader Load
 			%p.cpu_percentage
 				CPU Load:
 				%span#cpu_percentage_data 0.0
@@ -40,7 +43,13 @@
 			%p.sectionheader User info
 			%p.logged_in
 				Current sessions:
-				%span#logged_in_data
+				%span#logged_in_data= sessions_count
+			- unless logged_in?
+				%p.login_link 
+					%a{:href => "/login"} Log in
+			- else
+				%p.login_link
+					%a{:href => "/logout"} Log out
 
 
 

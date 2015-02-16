@@ -4,7 +4,9 @@ require 'rack-flash'
 
 
 set :bind, '0.0.0.0'
-enable :sessions
+use Rack::Session::Cookie, :domain => 'centos.local',
+                           :expire_after => 86400, 
+                           :secret => 'altay-aulandsdalen'
 
 
 class AltayNG < Sinatra::Application
@@ -24,29 +26,46 @@ class AltayNG < Sinatra::Application
 		def html(view)
 			File.read(File.join('public', "#{view.to_s}.html"))
 		end
+		def link_to url_fragment, mode=:path_only
+			case mode
+			when :path_only
+				base = request.script_name
+			when :full_url
+				if (request.scheme == 'http' && request.port == 80 || request.scheme == 'https' && request.port == 443)
+					port = ""
+				else
+		    		port = ":#{request.port}"
+				end
+			base = "#{request.scheme}://#{request.host}#{port}#{request.script_name}"
+			else
+				raise "Unknown script_url mode #{mode}"
+			end
+			"#{base}#{url_fragment}"
+		end
 	end
 	login_data = {
 		"username" => "user",
 		"password" => "secret"
 	}
 	usage = Usagewatch
-	@x = 'test'
 	sysinfo = SysInfo.new
 	os_short_name = %x(uname).chomp
 	os_full_name = %x(uname -rs).chomp
 	os_arch = %x(uname -m).chomp
 	cpu_model = Sys::CPU.processors[0].model_name.chomp
-	get '/new' do
+	get '/old' do
+		html :index
+	end
+
+	get '/' do
 		haml :index, :locals => {:os_full_name => os_full_name, 
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
 			:cpu_model => cpu_model, 
 			:total_ram => (%x(free).split(" ")[7].to_f/1024).to_i,
-			:uptime => IO.read('/proc/uptime').split[0].to_i}
-	end
-
-	get '/' do
-		html :index
+			:uptime => IO.read('/proc/uptime').split[0].to_i,
+			:sessions_count => %x(who | wc -l).chomp
+		}
 	end
 
 	get '/cpu' do 
@@ -102,6 +121,7 @@ class AltayNG < Sinatra::Application
 			if params[:password] == login_data["password"]
 				puts "successful auth!"
 				session[:username] = params[:username]
+				session[:useragent] = request.env['HTTP_USER_AGENT']
 				redirect '/'
 			else
 				puts "wrong password"
