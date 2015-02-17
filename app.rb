@@ -122,6 +122,7 @@ class AltayNG < Sinatra::Application
 				puts "successful auth!"
 				session[:username] = params[:username]
 				session[:useragent] = request.env['HTTP_USER_AGENT']
+				flash[:notice] = "Welcome back"
 				redirect '/'
 			else
 				puts "wrong password"

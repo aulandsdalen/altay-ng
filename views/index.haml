@@ -1,55 +1,57 @@
-%body
-	%div.wrap
-		%div.header.emerge.large.block
-			%p.sectionheader Environment info
-			%p.name= $ALTAY_APP_VERSION_FULL
-			%p.osv= os_full_name
-			%p#ruby_version
-				Ruby
-				= RUBY_VERSION
-			%p 
-				Commit
-				%span#commit_id= $ALTAY_APP_VERSION_COMMIT
-		%div.charts.emerge.large.block
-			%p.sectionheader Performance charts
-			%p.subheader CPU usage:
-			%canvas#cpu_usage_graph{:width => 400, :height => 100}
-			%p.subheader RAM usage:
-			%canvas#ram_usage_graph{:width => 400, :height => 100}
-		%div.clear
-		%div.server_info.emerge.small.block
-			%p.sectionheader Hardware info
-			%p#cpu_name 
-				CPU Model:
-				%span#cpu_name_data= cpu_model
-			%p#total_ram
-				RAM Size:
-				%span#ram_size_data= total_ram
-				Mbytes
-			%p#uptime
-				Uptime:
-				%span#uptime_data= uptime
-		%div.small.block.load
-			%p.sectionheader Load
-			%p.cpu_percentage
-				CPU Load:
-				%span#cpu_percentage_data 0.0
-				\%
-			%p.ram_percentage
-				RAM Load:
-				%span#ram_percentage_data 0.0
-				\%
-		%div.user.small.block
-			%p.sectionheader User info
-			%p.logged_in
-				Current sessions:
-				%span#logged_in_data= sessions_count
-			- unless logged_in?
-				%p.login_link 
-					%a{:href => "/login"} Log in
-			- else
-				%p.login_link
-					%a{:href => "/logout"} Log out
+-  if flash[:notice]
+	%p.message
+		=flash[:notice]
+%div.wrap
+	%div.header.emerge.large.block
+		%p.sectionheader Environment info
+		%p.name= $ALTAY_APP_VERSION_FULL
+		%p.osv= os_full_name
+		%p#ruby_version
+			Ruby
+			= RUBY_VERSION
+		%p 
+			Commit
+			%span#commit_id= $ALTAY_APP_VERSION_COMMIT
+	%div.charts.emerge.large.block
+		%p.sectionheader Performance charts
+		%p.subheader CPU usage:
+		%canvas#cpu_usage_graph{:width => 400, :height => 100}
+		%p.subheader RAM usage:
+		%canvas#ram_usage_graph{:width => 400, :height => 100}
+	%div.clear
+	%div.server_info.emerge.small.block
+		%p.sectionheader Hardware info
+		%p#cpu_name 
+			CPU Model:
+			%span#cpu_name_data= cpu_model
+		%p#total_ram
+			RAM Size:
+			%span#ram_size_data= total_ram
+			Mbytes
+		%p#uptime
+			Uptime:
+			%span#uptime_data= uptime
+	%div.small.block.load
+		%p.sectionheader Load
+		%p.cpu_percentage
+			CPU Load:
+			%span#cpu_percentage_data 0.0
+			\%
+		%p.ram_percentage
+			RAM Load:
+			%span#ram_percentage_data 0.0
+			\%
+	%div.user.small.block
+		%p.sectionheader User info
+		%p.logged_in
+			Current sessions:
+			%span#logged_in_data= sessions_count
+		- unless logged_in?
+			%p.login_link 
+				%a{:href => "/login"} Log in
+		- else
+			%p.login_link
+				%a{:href => "/logout"} Log out
 
 
 

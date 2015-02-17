@@ -1,67 +1,68 @@
 .os_image {
 	width: 150px;
 }
-	.nojsbanner {
-		width: 100%;
-		background-color: #ccc;
-		text-align: center;
-		padding-top: auto;
-		padding-bottom: auto;
-		z-index: 9999;
-	}
-	.nojsbanner > p {
-		font-size: 36pt;
-		font-family: Helvetica, Arial, sans-serif;
-		font-weight: bold;
-	}
-	.block {
-		padding: 5pt;
-		border: 1px solid #666;
-		border-radius: 5px;
-		width: auto;
-		display: inline-block;
-		vertical-align: middle;
-		background-color: #ccc;
-		margin-bottom: 10px;
-	}
-	.small {
-		height: 130px;
-	}
-	.large {
-		height: 280px;
-	}
-	.clear {
-	  	clear: both;
-	  	display: block;
-	  	overflow: hidden;
-	  	visibility: hidden;
-		width: 0;
-		height: 0;
-	}
-	.monospace {
-		font-family: monospace;
-	}
-	.sectionheader {
-		margin: 0;
-		font-size: small;
-		font-weight: bolder;
-	}
-	#alert {
-		position: absolute;
-		width: 99%;
-		height: 98%;
-		background-color: #ffbcad;
-		z-index: 6666;
-		text-align: center;
-		font-size: x-large;
-		font-family: sans-serif;
-	}
-	#alert > p {
-		margin-top: 25%;
-	}
-	.subheader {
-		font-size: smaller;
-		font-family: Helvetica, Arial, sans-serif;
-		margin: 0;
-		margin-top: 5pt;
-	}
+.nojsbanner {
+	width: 100%;
+	background-color: #ccc;
+	text-align: center;
+	padding-top: auto;
+	padding-bottom: auto;
+	z-index: 9999;
+}
+.nojsbanner > p {
+	font-size: 36pt;
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: bold;
+}
+.block {
+	padding: 5pt;
+	border: 1px solid #d7d7d7;
+	border-radius: 5px;
+	width: auto;
+	display: inline-block;
+	vertical-align: middle;
+	/*background-color: #ccc;*/
+	background-color: #fafafa;
+	margin-bottom: 10px;
+}
+.small {
+	height: 130px;
+}
+.large {
+	height: 280px;
+}
+.clear {
+  	clear: both;
+  	display: block;
+  	overflow: hidden;
+  	visibility: hidden;
+	width: 0;
+	height: 0;
+}
+.monospace {
+	font-family: monospace;
+}
+.sectionheader {
+	margin: 0;
+	font-size: small;
+	font-weight: bolder;
+}
+#alert {
+	position: absolute;
+	width: 99%;
+	height: 98%;
+	background-color: #ffbcad;
+	z-index: 6666;
+	text-align: center;
+	font-size: x-large;
+	font-family: sans-serif;
+}
+#alert > p {
+	margin-top: 25%;
+}
+.subheader {
+	font-size: smaller;
+	font-family: Helvetica, Arial, sans-serif;
+	margin: 0;
+	margin-top: 5pt;
+}
