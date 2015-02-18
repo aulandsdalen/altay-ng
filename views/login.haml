@@ -1,13 +1,13 @@
 - if flash[:error]
 	%p.error
 		= flash[:error]
-%div#login_wrapper
-	%form(action = "/authorize" method = "post")
-		%div
-			%label(for = "username")Username:
-			%input#username(type = "text" name = "username")
-		%div
-			%label(for = "password")Password:
-			%input#password(type = "password" name = "password")
-		%div
-			%input(type = "submit" value = "login")
+%form.form-signin(action = "/authorize" method = "post")
+	%h2.form-signin-heading 
+		Log in to
+		= request.env["SERVER_NAME"]
+	%div
+		%input.form-control#username(type = "text" name = "username" placeholder = "Altay username" required autofocus)
+	%div
+		%input.form-control#password(type = "password" name = "password" placeholder = "Altay password" required)
+	%div
+		%button.btn.btn-lg.btn-primary.btn-block(type = "submit") Log in
