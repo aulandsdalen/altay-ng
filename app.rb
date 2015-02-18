@@ -4,7 +4,7 @@ require 'rack-flash'
 
 
 set :bind, '0.0.0.0'
-use Rack::Session::Cookie, :domain => 'centos.local',
+use Rack::Session::Cookie, #:domain => '',
                            :expire_after => 86400, 
                            :secret => 'altay-aulandsdalen'
 
