@@ -26,22 +26,6 @@ class AltayNG < Sinatra::Application
 		def html(view)
 			File.read(File.join('public', "#{view.to_s}.html"))
 		end
-		def link_to url_fragment, mode=:path_only
-			case mode
-			when :path_only
-				base = request.script_name
-			when :full_url
-				if (request.scheme == 'http' && request.port == 80 || request.scheme == 'https' && request.port == 443)
-					port = ""
-				else
-		    		port = ":#{request.port}"
-				end
-			base = "#{request.scheme}://#{request.host}#{port}#{request.script_name}"
-			else
-				raise "Unknown script_url mode #{mode}"
-			end
-			"#{base}#{url_fragment}"
-		end
 	end
 	login_data = {
 		"username" => "user",
@@ -62,21 +46,13 @@ class AltayNG < Sinatra::Application
 			:cpu_model => cpu_model, 
 			:total_ram => '16384',
 			:uptime => '5000',
-			:sessions_count => %x(who | wc -l).chomp
+			:sessions_count => %x(who | wc -l).chomp, 
+			:current_user => session[:username]
 		}
 	end
-
-	get '/cpu' do 
-		"CPU load: #{usage.uw_cpuused} %"
-	end
-	get '/ram' do
-		usedramperc = '30'#usage.uw_memused.to_f
-		totalram = '16384' #%x(free).split(" ")[7].to_f
-		usedram = totalram * (usedramperc/100)
-		"RAM usage: #{usedramperc} % or #{usedram.to_i} bytes of total #{totalram.to_i} bytes used"
-	end
-	get '/system' do
-		"Running on #{sysinfo.os} #{sysinfo.arch} with version #{sysinfo.ruby} with IP #{sysinfo.ipaddress_internal}<br>#{%x(uname -rs)}"
+	get '/utmp.txt' do 
+		content_type 'text/plain'
+		%x(utmp_reader)
 	end
 	get '/system.json' do
 		json :altay_version_full => $ALTAY_APP_VERSION_FULL,
@@ -88,10 +64,6 @@ class AltayNG < Sinatra::Application
 			 :ruby_version => RUBY_VERSION + " " + RUBY_PLATFORM,
 			 :arch => os_arch,
 			 :cpu_name => cpu_model
-	end
-	get '/software.json' do
-		# TODO
-		# separate system data and software data
 	end
 	get '/load.json' do 
 		json :cpu => '20',
@@ -108,13 +80,14 @@ class AltayNG < Sinatra::Application
 	# authentication #
 	##################
 	get '/login' do
-		haml :login
+		haml :login, :locals => {:title => "Log in"}
 	end
 	#get '/login/:username' do 
 	#	session[:username] = params[:username]
 	#	redirect '/'
 	#end
 	post '/authorize' do
+		puts params
 		if params[:username] == login_data["username"]
 			if params[:password] == login_data["password"]
 				puts "successful auth!"

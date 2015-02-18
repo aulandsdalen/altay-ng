@@ -7,7 +7,10 @@
 			%link{:rel => "stylesheet", :href => "/css#{request.path_info}.css"}
 		- else
 			%link{:rel => "stylesheet", :href => "/css/index.css"}
-		%title= $ALTAY_APP_VERSION_FULL
+		- if defined? title
+			%title= title + " | " + $ALTAY_APP_VERSION_FULL
+		- else	
+			%title= $ALTAY_APP_VERSION_FULL
 	%body
 		%div.container
 			= yield
