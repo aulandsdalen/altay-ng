@@ -40,7 +40,7 @@ class AltayNG < Sinatra::Application
 	end
 
 	get '/' do
-		haml :index, :locals => {:os_full_name => os_full_name, 
+		haml :index_new, :locals => {:os_full_name => os_full_name, 
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
 			:cpu_model => cpu_model, 

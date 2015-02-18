@@ -1,0 +1,57 @@
+-  if flash[:notice]
+	%p.message
+		=flash[:notice]
+%div.container-fluid
+	%div.row
+		%div.col-md-2.block.block-small.draggable
+			%h4 Environment info
+			%p.name= $ALTAY_APP_VERSION_FULL
+			%p.osv= os_full_name
+			%p#ruby_version
+				Ruby
+				= RUBY_VERSION
+			%p 
+				Commit
+				%span#commit_id= $ALTAY_APP_VERSION_COMMIT
+		%div.col-md-3.block.block-small.draggable
+			%h4 Hardware info
+			%p#cpu_name 
+				CPU Model:
+				%span#cpu_name_data= cpu_model
+			%p#total_ram
+				RAM Size:
+				%span#ram_size_data= total_ram
+				Mbytes
+			%p#uptime
+				Uptime:
+				%span#uptime_data= uptime
+		%div.col-md-3.block.block-small.draggable
+			%h4 User info
+			%p.logged_in
+				Current sessions: 
+				%span#logged_in_data= sessions_count
+			- unless logged_in?
+				%p.login_link 
+					%a{:href => "/login"} Log in
+			- else
+				%p.login_link
+					%a{:href => "/logout"} Log out
+				%p.username
+					Logged in as
+					= username
+	.clear
+	.row
+		%div.col-md-5.block.draggable
+			%h4 Meters
+			%h5 CPU usage
+			%canvas#cpu_usage_graph{:width => 400, :height => 100}
+			%h5 RAM usage
+			%canvas#ram_usage_graph{:width => 400, :height => 100}
+
+
+%script{ :type => "text/javascript", :src => "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"}
+%script{ :type => "text/javascript", :src => "http://yastatic.net/jquery/2.1.3/jquery.min.js"}
+%script{ :type => "text/javascript", :src => "/js/smoothie.js"}
+%script{ :type => "text/javascript", :src => "/js/extra.js"}
+%script{ :type => "text/javascript", :src => "/js/altay.js"}
+%script{ :type => "text/javascript", :src => "//code.jquery.com/ui/1.11.3/jquery-ui.js"}

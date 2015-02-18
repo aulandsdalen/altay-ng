@@ -1,4 +1,4 @@
-.os_image {
+/*.os_image {
 	width: 150px;
 }
 .nojsbanner {
@@ -21,7 +21,6 @@
 	width: auto;
 	display: inline-block;
 	vertical-align: middle;
-	/*background-color: #ccc;*/
 	background-color: #fafafa;
 	margin-bottom: 10px;
 }
@@ -65,4 +64,25 @@
 	font-family: Helvetica, Arial, sans-serif;
 	margin: 0;
 	margin-top: 5pt;
+}*/
+body {
+	padding-top: 5%;
+	padding-left: 4em;
+}
+.block {
+	border: 3px solid rgba(240, 240, 240, 50);
+	border-radius: .5em;
+	background-color: rgba(240, 240, 240, 50);
+	/*margin-left: 5px;
+	margin-right: 5px;*/
+	margin-left: .7em;
+	margin-right: .7em;
+}
+.block-small {
+}
+canvas {
+	margin-bottom: 10px;
+}
+.clear {
+	height: 1em;
 }

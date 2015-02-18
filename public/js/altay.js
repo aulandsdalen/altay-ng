@@ -1,4 +1,7 @@
 getPermanentParameters();
+$(function(){
+	$(".draggable").draggable({grid:[80, 80], containment: "parent", cursor: "move"});
+});
 var cpuSmoothie = new SmoothieChart({grid:{sharpLines:true},labels:{disabled:false},maxValue:100,minValue:0});
 var ramSmoothie = new SmoothieChart({grid:{sharpLines:true},labels:{disabled:false},maxValue:100,minValue:0});
 var cpu_line = new TimeSeries();
@@ -18,9 +21,9 @@ function display_alert(text) {
 function getPermanentParameters() { //get and display static parameters once
 	$.getJSON("/system.json", function(data){
 		$("title").text(data.altay_version_full);
-		$(".osv").html('<img src='+data.os_logo_image_link+' alt="" class="os_image">');
+		//$(".osv").html('<img src='+data.os_logo_image_link+' alt="" class="os_image">');
 		$(".name").text(data.altay_version_full);
-		$("#ruby_version").text(data.ruby_version);
+		//$("#ruby_version").text(data.ruby_version);
 		$("#altay_commit").text(data.altay_version_commit);
 		$("#cpu_name_data").text(data.cpu_name);
 	});	
