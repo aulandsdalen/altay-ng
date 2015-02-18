@@ -28,7 +28,13 @@ function getPermanentParameters() { //get and display static parameters once
 		$("#cpu_name_data").text(data.cpu_name);
 	});	
 }
-window.setInterval(updateMeters, 500); //update every 1000 msec
+var updateMetersInterval = window.setInterval(updateMeters, 500); //update every 500 msec
+var cleanupInterval = window.setInterval(removeMessages, 3000);
+function removeMessages() {
+	message = document.getElementById('message');
+	message.remove();
+	clearInterval(cleanupInterval);
+}
 function updateMeters() {
 	$.getJSON("/load.json", function(data){
 		var uptime = moment.duration(data.uptime*1000);

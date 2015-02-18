@@ -51,8 +51,11 @@ class AltayNG < Sinatra::Application
 		}
 	end
 	get '/utmp.txt' do 
-		content_type 'text/plain'
-		%x(utmp_reader)
+		output = %x(utmp_reader)
+		output_file = File.new("UTMP.txt", 'w')
+		output_file.puts output
+		output_file.close
+		send_file "UTMP.txt", :filename => "UTMP.txt", :type => "text/plain"
 	end
 	get '/system.json' do
 		json :altay_version_full => $ALTAY_APP_VERSION_FULL,
@@ -80,7 +83,12 @@ class AltayNG < Sinatra::Application
 	# authentication #
 	##################
 	get '/login' do
-		haml :login, :locals => {:title => "Log in"}
+		if logged_in?
+			flash[:notice] = "Already logged in"
+			redirect '/'
+		else
+			haml :login, :locals => {:title => "Log in"}
+		end
 	end
 	#get '/login/:username' do 
 	#	session[:username] = params[:username]

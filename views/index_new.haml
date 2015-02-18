@@ -1,18 +1,9 @@
--  if flash[:notice]
-	%p.message
-		=flash[:notice]
 %div.container-fluid
+	-  if flash[:notice]
+		%div#message
+			%p.message
+				=flash[:notice]
 	%div.row
-		%div.col-md-2.block.block-small.draggable
-			%h4 Environment info
-			%p.name= $ALTAY_APP_VERSION_FULL
-			%p.osv= os_full_name
-			%p#ruby_version
-				Ruby
-				= RUBY_VERSION
-			%p 
-				Commit
-				%span#commit_id= $ALTAY_APP_VERSION_COMMIT
 		%div.col-md-3.block.block-small.draggable
 			%h4 Hardware info
 			%p#cpu_name 
@@ -25,6 +16,18 @@
 			%p#uptime
 				Uptime:
 				%span#uptime_data= uptime
+	
+		%div.col-md-3.block.block-small.draggable
+			%h4 Load
+			%p.cpu_percentage
+				CPU Load:
+				%span#cpu_percentage_data 0.0
+				\%
+			%p.ram_percentage
+				RAM Load:
+				%span#ram_percentage_data 0.0
+				\%
+
 		%div.col-md-3.block.block-small.draggable
 			%h4 User info
 			%p.logged_in
@@ -39,14 +42,32 @@
 				%p.username
 					Logged in as
 					= username
+		- if logged_in?
+			%div.col-md-2.block.block-small.draggable
+				%h4 Environment info
+				%p.name= $ALTAY_APP_VERSION_FULL
+				%p.osv= os_full_name
+				%p#ruby_version
+					Ruby
+					= RUBY_VERSION
+				%p 
+					Commit
+					%span#commit_id= $ALTAY_APP_VERSION_COMMIT
+		- else
+			%div.col-md-2.block.block-small
+				%h4 Log in to see all meters
 	.clear
-	.row
-		%div.col-md-5.block.draggable
-			%h4 Meters
-			%h5 CPU usage
-			%canvas#cpu_usage_graph{:width => 400, :height => 100}
-			%h5 RAM usage
-			%canvas#ram_usage_graph{:width => 400, :height => 100}
+	- if logged_in?
+		.row
+			%div.col-md-5.block.draggable
+				%h4 Meters
+				%h5 CPU usage
+				%canvas#cpu_usage_graph{:width => 400, :height => 100}
+				%h5 RAM usage
+				%canvas#ram_usage_graph{:width => 400, :height => 100}
+			%div.col-md-2.block.block-draggable
+				%h4 Server data
+				%a{:href => "/utmp.txt"} UTMP list
 
 
 %script{ :type => "text/javascript", :src => "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"}

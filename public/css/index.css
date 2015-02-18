@@ -69,6 +69,18 @@ body {
 	padding-top: 5%;
 	padding-left: 4em;
 }
+#message {
+	background-color: #bceaf6;
+	width: 180px;
+	border-radius: .2em;
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+}
+p.message {
+	font-weight: lighter;
+	font-size: smaller;
+}
 .block {
 	border: 3px solid rgba(240, 240, 240, 50);
 	border-radius: .5em;
@@ -77,6 +89,7 @@ body {
 	margin-right: 5px;*/
 	margin-left: .7em;
 	margin-right: .7em;
+	padding-bottom: 5px;
 }
 .block-small {
 }
