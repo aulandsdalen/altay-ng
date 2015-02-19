@@ -50,13 +50,6 @@ class AltayNG < Sinatra::Application
 			:current_user => session[:username]
 		}
 	end
-	get '/utmp.txt' do 
-		output = %x(utmp_reader)
-		output_file = File.new("UTMP.txt", 'w')
-		output_file.puts output
-		output_file.close
-		send_file "UTMP.txt", :filename => "UTMP.txt", :type => "text/plain"
-	end
 	get '/system.json' do
 		json :altay_version_full => $ALTAY_APP_VERSION_FULL,
 			 :altay_version_short => $ALTAY_APP_VERSION_SHORT,
@@ -129,5 +122,19 @@ class AltayNG < Sinatra::Application
 		json :result => "not authorized",
 			 :code => 403,
 			 :human_readable => "Log in to perform this action"
+	end
+
+	##############
+	# text files #
+	##############
+	get '/utmp.txt' do 
+		output = %x(utmp_reader)
+		output_file = File.new("UTMP.txt", 'w')
+		output_file.puts output
+		output_file.close
+		send_file "UTMP.txt", :filename => "UTMP.txt", :type => "text/plain"
+	end
+	get '/dmesg.txt' do
+		send_file "dmesg.txt", :filename => dmesg.log, :type => "text/plain"
 	end
 end
