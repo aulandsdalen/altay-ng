@@ -1,8 +1,4 @@
-body {
-	padding-top: 5%;
-}
-
-.os_image {
+/*.os_image {
 	width: 150px;
 }
 .nojsbanner {
@@ -25,7 +21,6 @@ body {
 	width: auto;
 	display: inline-block;
 	vertical-align: middle;
-	/*background-color: #ccc;*/
 	background-color: #fafafa;
 	margin-bottom: 10px;
 }
@@ -69,4 +64,38 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	margin: 0;
 	margin-top: 5pt;
+}*/
+body {
+	padding-top: 5%;
+	padding-left: 4em;
+}
+#message {
+	background-color: #bceaf6;
+	width: 180px;
+	border-radius: .2em;
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+}
+p.message {
+	font-weight: lighter;
+	font-size: smaller;
+}
+.block {
+	border: 3px solid rgba(240, 240, 240, 50);
+	border-radius: .5em;
+	background-color: rgba(240, 240, 240, 50);
+	/*margin-left: 5px;
+	margin-right: 5px;*/
+	margin-left: .7em;
+	margin-right: .7em;
+	padding-bottom: 5px;
+}
+.block-small {
+}
+canvas {
+	margin-bottom: 10px;
+}
+.clear {
+	height: 1em;
 }

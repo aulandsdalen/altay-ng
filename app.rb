@@ -4,7 +4,7 @@ require 'rack-flash'
 
 
 set :bind, '0.0.0.0'
-use Rack::Session::Cookie, #:domain => 'centos.local',
+use Rack::Session::Cookie, #:domain => '',
                            :expire_after => 86400, 
                            :secret => 'altay-aulandsdalen'
 
@@ -26,22 +26,6 @@ class AltayNG < Sinatra::Application
 		def html(view)
 			File.read(File.join('public', "#{view.to_s}.html"))
 		end
-		def link_to url_fragment, mode=:path_only
-			case mode
-			when :path_only
-				base = request.script_name
-			when :full_url
-				if (request.scheme == 'http' && request.port == 80 || request.scheme == 'https' && request.port == 443)
-					port = ""
-				else
-		    		port = ":#{request.port}"
-				end
-			base = "#{request.scheme}://#{request.host}#{port}#{request.script_name}"
-			else
-				raise "Unknown script_url mode #{mode}"
-			end
-			"#{base}#{url_fragment}"
-		end
 	end
 	login_data = {
 		"username" => "user",
@@ -58,27 +42,15 @@ class AltayNG < Sinatra::Application
 	end
 
 	get '/' do
-		haml :index, :locals => {:os_full_name => os_full_name, 
+		haml :index_new, :locals => {:os_full_name => os_full_name, 
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
 			:cpu_model => cpu_model, 
 			:total_ram => (%x(free).split(" ")[7].to_f/1024).to_i,
 			:uptime => IO.read('/proc/uptime').split[0].to_i,
-			:sessions_count => %x(who | wc -l).chomp
+			:sessions_count => %x(who | wc -l).chomp, 
+			:current_user => session[:username]
 		}
-	end
-
-	get '/cpu' do 
-		"CPU load: #{usage.uw_cpuused} %"
-	end
-	get '/ram' do
-		usedramperc = usage.uw_memused.to_f
-		totalram = %x(free).split(" ")[7].to_f
-		usedram = totalram * (usedramperc/100)
-		"RAM usage: #{usedramperc} % or #{usedram.to_i} bytes of total #{totalram.to_i} bytes used"
-	end
-	get '/system' do
-		"Running on #{sysinfo.os} #{sysinfo.arch} with version #{sysinfo.ruby} with IP #{sysinfo.ipaddress_internal}<br>#{%x(uname -rs)}"
 	end
 	get '/system.json' do
 		json :altay_version_full => $ALTAY_APP_VERSION_FULL,
@@ -86,14 +58,10 @@ class AltayNG < Sinatra::Application
 			 :altay_version_commit => $ALTAY_APP_VERSION_COMMIT,
 			 :os_short => os_short_name,
 			 :os_full => os_full_name,
-			 :os_logo_image_link => "/images/os-linux.png",
+			 :os_logo_image_link => "/images/os-mac.png",
 			 :ruby_version => RUBY_VERSION + " " + RUBY_PLATFORM,
 			 :arch => os_arch,
 			 :cpu_name => cpu_model
-	end
-	get '/software.json' do
-		# TODO
-		# separate system data and software data
 	end
 	get '/load.json' do 
 		json :cpu => usage.uw_cpuused,
@@ -110,13 +78,19 @@ class AltayNG < Sinatra::Application
 	# authentication #
 	##################
 	get '/login' do
-		haml :login
+		if logged_in?
+			flash[:notice] = "Already logged in"
+			redirect '/'
+		else
+			haml :login, :locals => {:title => "Log in"}
+		end
 	end
 	#get '/login/:username' do 
 	#	session[:username] = params[:username]
 	#	redirect '/'
 	#end
 	post '/authorize' do
+		puts params
 		if params[:username] == login_data["username"]
 			if params[:password] == login_data["password"]
 				puts "successful auth!"
@@ -150,5 +124,29 @@ class AltayNG < Sinatra::Application
 		json :result => "not authorized",
 			 :code => 403,
 			 :human_readable => "Log in to perform this action"
+	end
+
+	##############
+	# text files #
+	##############
+	get '/utmp' do
+		if logged_in?
+			output = %x(utmp_reader)
+			output_file = File.new("UTMP.txt", 'w')
+			output_file.puts output
+			output_file.close
+			send_file "UTMP.txt", :filename => "UTMP.log", :type => "text/plain"
+		else
+			flash[:error] = "Log in to see this page"
+			redirect '/login'
+		end
+	end
+	get '/dmesg' do
+		if logged_in?
+			send_file "dmesg.txt", :filename => "dmesg.log", :type => "text/plain"
+		else
+			flash[:error] = "Log in to see this page"
+			redirect '/login'
+		end
 	end
 end

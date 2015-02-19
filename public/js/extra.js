@@ -10,3 +10,6 @@ String.prototype.toHHMMSS = function () {
     var time    = hours+':'+minutes+':'+seconds;
     return time;
 }
+$(function(){
+	$(".draggable").draggable({grid:[80, 80]});
+});
