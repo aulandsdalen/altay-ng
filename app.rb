@@ -31,10 +31,12 @@ class AltayNG < Sinatra::Application
 		"username" => "user",
 		"password" => "secret"
 	}
+	usage = Usagewatch
+	sysinfo = SysInfo.new
 	os_short_name = %x(uname).chomp
 	os_full_name = %x(uname -rs).chomp
 	os_arch = %x(uname -m).chomp
-	cpu_model = "cpu_model" # Sys::CPU.processors[0].model_name.chomp
+	cpu_model = Sys::CPU.processors[0].model_name.chomp
 	get '/old' do
 		html :index
 	end
@@ -44,8 +46,8 @@ class AltayNG < Sinatra::Application
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
 			:cpu_model => cpu_model, 
-			:total_ram => '16384',
-			:uptime => '5000',
+			:total_ram => (%x(free).split(" ")[7].to_f/1024).to_i,
+			:uptime => IO.read('/proc/uptime').split[0].to_i,
 			:sessions_count => %x(who | wc -l).chomp, 
 			:current_user => session[:username]
 		}
@@ -62,10 +64,10 @@ class AltayNG < Sinatra::Application
 			 :cpu_name => cpu_model
 	end
 	get '/load.json' do 
-		json :cpu => '20',
-			 :ram_used => '20',
-			 :ram_total => '16384',
-			 :uptime => '5000'
+		json :cpu => usage.uw_cpuused,
+			 :ram_used => usage.uw_memused,
+			 :ram_total => (%x(free).split(" ")[7].to_f/1024).to_i,
+			 :uptime => IO.read('/proc/uptime').split[0].to_i
 	end
 	get '/user.json' do 
 		json :sessions_count => %x(who | wc -l).chomp,
@@ -127,14 +129,24 @@ class AltayNG < Sinatra::Application
 	##############
 	# text files #
 	##############
-	get '/utmp.txt' do 
-		output = %x(utmp_reader)
-		output_file = File.new("UTMP.txt", 'w')
-		output_file.puts output
-		output_file.close
-		send_file "UTMP.txt", :filename => "UTMP.txt", :type => "text/plain"
+	get '/utmp' do
+		if logged_in?
+			output = %x(utmp_reader)
+			output_file = File.new("UTMP.txt", 'w')
+			output_file.puts output
+			output_file.close
+			send_file "UTMP.txt", :filename => "UTMP.log", :type => "text/plain"
+		else
+			flash[:error] = "Log in to see this page"
+			redirect '/login'
+		end
 	end
-	get '/dmesg.txt' do
-		send_file "dmesg.txt", :filename => "dmesg.log", :type => "text/plain"
+	get '/dmesg' do
+		if logged_in?
+			send_file "dmesg.txt", :filename => "dmesg.log", :type => "text/plain"
+		else
+			flash[:error] = "Log in to see this page"
+			redirect '/login'
+		end
 	end
 end
