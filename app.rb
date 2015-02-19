@@ -135,6 +135,6 @@ class AltayNG < Sinatra::Application
 		send_file "UTMP.txt", :filename => "UTMP.txt", :type => "text/plain"
 	end
 	get '/dmesg.txt' do
-		send_file "dmesg.txt", :filename => dmesg.log, :type => "text/plain"
+		send_file "dmesg.txt", :filename => "dmesg.log", :type => "text/plain"
 	end
 end

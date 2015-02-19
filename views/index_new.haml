@@ -66,8 +66,9 @@
 				%h5 RAM usage
 				%canvas#ram_usage_graph{:width => 400, :height => 100}
 			%div.col-md-2.block.block-draggable
-				%h4 Server data
+				%h4 Server logs
 				%a{:href => "/utmp.txt"} UTMP list
+				%a{:href => "/dmesg.txt"} Kernel messages log
 
 
 %script{ :type => "text/javascript", :src => "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"}
