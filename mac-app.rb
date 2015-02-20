@@ -32,6 +32,7 @@ class AltayNG < Sinatra::Application
 		"username" => "user",
 		"password" => "secret"
 	}
+	os = OSAL.new
 	usage = Usagewatch
 	sysinfo = SysInfo.new
 	os_short_name = %x(uname).chomp
@@ -65,8 +66,8 @@ class AltayNG < Sinatra::Application
 			 :cpu_name => cpu_model
 	end
 	get '/load.json' do 
-		json :cpu => rand * 100 #usage.uw_cpuused,
-			 :ram_used => rand * 100 #usage.uw_memused,
+		json :cpu => os.cpu_load, #usage.uw_cpuused,
+			 :ram_used => rand * 100, #usage.uw_memused,
 			 :ram_total => "16384", #(%x(free).split(" ")[7].to_f/1024).to_i,
 			 :uptime => %x(uptime) #IO.read('/proc/uptime').split[0].to_i
 	end

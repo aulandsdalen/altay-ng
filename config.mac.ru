@@ -4,7 +4,7 @@ require 'bundler'
 Bundler.require
 root = ::File.dirname(__FILE__)
 
-
+require ::File.join(root, 'os/OSAL.rb')
 require ::File.join(root, 'mac-app')
 
 $ALTAY_APP_VERSION_FULL = 'Altay 0.16.2 NG'

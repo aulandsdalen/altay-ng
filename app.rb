@@ -32,24 +32,25 @@ class AltayNG < Sinatra::Application
 		"username" => "user",
 		"password" => "secret"
 	}
+	os = OSAL.new
 	usage = Usagewatch
 	sysinfo = SysInfo.new
 	os_short_name = %x(uname).chomp
 	os_full_name = %x(uname -rs).chomp
 	os_arch = %x(uname -m).chomp
-	cpu_model = Sys::CPU.processors[0].model_name.chomp
+	cpu_model = os.cpu_model
+	total_ram = os.total_ram
 	get '/old' do
 		html :index
 	end
-
 	get '/' do
 		haml :index_new, :locals => {:os_full_name => os_full_name, 
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
 			:cpu_model => cpu_model, 
-			:total_ram => (%x(free).split(" ")[7].to_f/1024).to_i,
-			:uptime => IO.read('/proc/uptime').split[0].to_i,
-			:sessions_count => %x(who | wc -l).chomp, 
+			:total_ram => total_ram,
+			:uptime => os.uptime,
+			:sessions_count => os.sessions_count, 
 			:current_user => session[:username]
 		}
 	end
@@ -59,19 +60,19 @@ class AltayNG < Sinatra::Application
 			 :altay_version_commit => $ALTAY_APP_VERSION_COMMIT,
 			 :os_short => os_short_name,
 			 :os_full => os_full_name,
-			 :os_logo_image_link => "/images/os-mac.png",
+			 :os_logo_image_link => "",
 			 :ruby_version => RUBY_VERSION + " " + RUBY_PLATFORM,
 			 :arch => os_arch,
 			 :cpu_name => cpu_model
 	end
 	get '/load.json' do 
-		json :cpu => usage.uw_cpuused,
-			 :ram_used => usage.uw_memused,
-			 :ram_total => (%x(free).split(" ")[7].to_f/1024).to_i,
-			 :uptime => IO.read('/proc/uptime').split[0].to_i
+		json :cpu => os.cpu_load,
+			 :ram_used => os.ram_used,
+			 :ram_total => total_ram,
+			 :uptime => os.uptime
 	end
 	get '/user.json' do 
-		json :sessions_count => %x(who | wc -l).chomp,
+		json :sessions_count => os.sessions_count,
 			 :www_user => %x(whoami).chomp
 	end
 
