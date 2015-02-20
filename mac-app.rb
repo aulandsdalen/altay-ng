@@ -37,7 +37,7 @@ class AltayNG < Sinatra::Application
 	os_short_name = %x(uname).chomp
 	os_full_name = %x(uname -rs).chomp
 	os_arch = %x(uname -m).chomp
-	cpu_model = Sys::CPU.processors[0].model_name.chomp
+	cpu_model = "Generic #{os_arch} CPU" #Sys::CPU.processors[0].model_name.chomp
 	get '/old' do
 		html :index
 	end
@@ -47,8 +47,8 @@ class AltayNG < Sinatra::Application
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
 			:cpu_model => cpu_model, 
-			:total_ram => (%x(free).split(" ")[7].to_f/1024).to_i,
-			:uptime => IO.read('/proc/uptime').split[0].to_i,
+			:total_ram => "16384" #(%x(free).split(" ")[7].to_f/1024).to_i,
+			:uptime => %x(uptime),
 			:sessions_count => %x(who | wc -l).chomp, 
 			:current_user => session[:username]
 		}
@@ -59,16 +59,16 @@ class AltayNG < Sinatra::Application
 			 :altay_version_commit => $ALTAY_APP_VERSION_COMMIT,
 			 :os_short => os_short_name,
 			 :os_full => os_full_name,
-			 :os_logo_image_link => "/images/os-mac.png",
+			 #:os_logo_image_link => "/images/os-mac.png",
 			 :ruby_version => RUBY_VERSION + " " + RUBY_PLATFORM,
 			 :arch => os_arch,
 			 :cpu_name => cpu_model
 	end
 	get '/load.json' do 
-		json :cpu => usage.uw_cpuused,
-			 :ram_used => usage.uw_memused,
-			 :ram_total => (%x(free).split(" ")[7].to_f/1024).to_i,
-			 :uptime => IO.read('/proc/uptime').split[0].to_i
+		json :cpu => rand * 100 #usage.uw_cpuused,
+			 :ram_used => rand * 100 #usage.uw_memused,
+			 :ram_total => "16384" #(%x(free).split(" ")[7].to_f/1024).to_i,
+			 :uptime => %x(uptime) #IO.read('/proc/uptime').split[0].to_i
 	end
 	get '/user.json' do 
 		json :sessions_count => %x(who | wc -l).chomp,
