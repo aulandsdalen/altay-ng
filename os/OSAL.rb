@@ -1,5 +1,4 @@
 class OSAL
-	usage  = Usagewatch
 	module OS
 		def OS.windows?
 			(/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
@@ -18,7 +17,7 @@ class OSAL
 			return rand(100)
 		end
 		if (/linux/ =~ RUBY_PLATFORM) != nil
-			return usage.uw_cpuused
+			return Usagewatch.uw_cpuused
 		end
 	end
 	def total_ram
