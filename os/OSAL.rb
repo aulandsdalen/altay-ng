@@ -41,7 +41,7 @@ class OSAL
 			return 45
 		end
 		if (/linux/ =~ RUBY_PLATFORM) != nil
-			return usage.uw_memused
+			return Usagewatch.uw_memused
 		end
 	end
 	def sessions_count
