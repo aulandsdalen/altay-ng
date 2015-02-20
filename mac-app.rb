@@ -47,7 +47,7 @@ class AltayNG < Sinatra::Application
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
 			:cpu_model => cpu_model, 
-			:total_ram => "16384" #(%x(free).split(" ")[7].to_f/1024).to_i,
+			:total_ram => "16384", #(%x(free).split(" ")[7].to_f/1024).to_i,
 			:uptime => %x(uptime),
 			:sessions_count => %x(who | wc -l).chomp, 
 			:current_user => session[:username]
@@ -67,7 +67,7 @@ class AltayNG < Sinatra::Application
 	get '/load.json' do 
 		json :cpu => rand * 100 #usage.uw_cpuused,
 			 :ram_used => rand * 100 #usage.uw_memused,
-			 :ram_total => "16384" #(%x(free).split(" ")[7].to_f/1024).to_i,
+			 :ram_total => "16384", #(%x(free).split(" ")[7].to_f/1024).to_i,
 			 :uptime => %x(uptime) #IO.read('/proc/uptime').split[0].to_i
 	end
 	get '/user.json' do 
