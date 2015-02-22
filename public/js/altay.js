@@ -54,6 +54,6 @@ function updateMeters() {
 		$("#www_user_data").text(data.www_user);
 	});
 }
-cpuSmoothie.addTimeSeries(cpu_line, {lineWidth:2,strokeStyle:'#00ff00',fillStyle:'rgba(90,230,126,0.30)'});
-ramSmoothie.addTimeSeries(ram_line, {lineWidth:2,strokeStyle:'#00ff00',fillStyle:'rgba(90,230,126,0.30)'});
+cpuSmoothie.addTimeSeries(cpu_line, {lineWidth:2,strokeStyle:'#cccccc',fillStyle:'rgba(204,204,204,0.30)'});
+ramSmoothie.addTimeSeries(ram_line, {lineWidth:2,strokeStyle:'#cccccc',fillStyle:'rgba(204,204,204,0.30)'});
 document.getElementById("rebootAction").addEventListener('click', rebootMachine);
