@@ -127,7 +127,7 @@ class AltayNG < Sinatra::Application
 	post '/restartservice.action' do
 		servicename = params[:service_name].tr(";", "").tr(" ", "")
 		puts "restarting service " + servicename
-		if(os.restart_service(servicename))
+		if(os.restart_service(servicename) == 0)
 			json :result => "ok",
 				 :code => 200,
 				 :human_readable => "Restarted service " +  servicename

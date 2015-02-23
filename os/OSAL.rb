@@ -69,8 +69,8 @@ class OSAL
 		if (/linux/ =~ RUBY_PLATFORM) == nil
 			return true
 		else
-			if(%x(service #{servicename} restart))
-				return true
+			if(system("service #{servicename} restart"))
+				return $?
 			else
 				return false
 			end
