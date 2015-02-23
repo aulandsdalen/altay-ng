@@ -17,11 +17,13 @@ function rebootMachine() {
 	});
 }
 function restartService() {
+	service_name_input = document.getElementById("serviceName"); 
 	post_data = {
-		service_name: document.getElementById("serviceName").value
+		service_name: service_name_input.value
 	}
 	$.post("/restartservice.action", post_data, function(data){
 		display_alert(data.human_readable);
+		service_name_input.value = "";
 	});
 }
 function display_alert(text) {
