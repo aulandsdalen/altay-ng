@@ -163,6 +163,10 @@ class AltayNG < Sinatra::Application
 	end
 	get '/dmesg' do
 		if logged_in?
+			output = %x(dmesg)
+			output_file = File.new("dmesg.txt", 'w')
+			output_file.puts output
+			output_file.close
 			send_file "dmesg.txt", :filename => "dmesg.log", :type => "text/plain"
 		else
 			flash[:error] = "Log in to see this page"
