@@ -56,4 +56,21 @@ class OSAL
 			return Sys::CPU.processors[0].model_name.chomp
 		end
 	end
+	def dmesg
+		if (/linux/ =~ RUBY_PLATFORM) != nil 
+			output = %x(utmp_reader)
+			output_file = File.new("dmesg.log", 'w')
+			output_file.puts output
+			output_file.close
+		end
+		return output_file
+	end
+	def restart_service servicename
+		if (/linux/ =~ RUBY_PLATFORM) == nil
+			return true
+		else
+			%x(service #{servicename} restart)
+			return true
+		end
+	end
 end

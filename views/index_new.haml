@@ -71,6 +71,13 @@
 					%a{:href => "/utmp"} UTMP log
 				%p
 					%a{:href => "/dmesg"} Kernel messages log
+			%div.col-md-2.block.block-draggable
+				%h4 Server controls
+				%p
+					%a#rebootAction{:href => "#"} Reboot server
+					%span.service-controls
+						%input#serviceName{:type => "text", :required => true, :placeholder => "Service to restart", :name => "service_name"}
+						%button.btn.btn-danger.btn-xs.btn-restart#restartService{:type => "submit"} Restart service
 
 
 %script{ :type => "text/javascript", :src => "//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"}

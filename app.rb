@@ -28,6 +28,11 @@ class AltayNG < Sinatra::Application
 			File.read(File.join('public', "#{view.to_s}.html"))
 		end
 	end
+	before "*.action" do 
+		unless logged_in?
+			redirect "/login"
+		end
+	end
 	login_data = {
 		"username" => "user",
 		"password" => "secret"
@@ -47,8 +52,8 @@ class AltayNG < Sinatra::Application
 		haml :index_new, :locals => {:os_full_name => os_full_name, 
 			:os_short_name => os_short_name, 
 			:os_arch => os_arch, 
-			:cpu_model => cpu_model, 
-			:total_ram => total_ram,
+			:cpu_model => os.cpu_model, 
+			:total_ram => os.total_ram,
 			:uptime => os.uptime,
 			:sessions_count => os.sessions_count, 
 			:current_user => session[:username]
@@ -68,7 +73,7 @@ class AltayNG < Sinatra::Application
 	get '/load.json' do 
 		json :cpu => os.cpu_load,
 			 :ram_used => os.ram_used,
-			 :ram_total => total_ram,
+			 :ram_total => os.total_ram,
 			 :uptime => os.uptime
 	end
 	get '/user.json' do 
@@ -119,14 +124,22 @@ class AltayNG < Sinatra::Application
 		json :logged_in => logged_in?,
 			 :username => username
 	end
-	get '/reboot.action' do 
-		#todo: auth
-		#%x(reboot)
-		#flash[:error] = "Log in to perform this action"
-		json :result => "not authorized",
-			 :code => 403,
-			 :human_readable => "Log in to perform this action"
+	post '/restartservice.action' do
+		servicename = params[:service_name].tr(";", "").tr(" ", "")
+		puts "restarting service " + servicename
+		os.restart_service(servicename)
+		json :result => "ok",
+			 :code => 200,
+			 :human_readable => "Restarting service " +  servicename
 	end
+	get '/reboot.action' do 
+		puts "rebooting"
+		os.reboot
+		json :result => "ok",
+			 :code => 200,
+			 :human_readable => "Machine is rebooting"
+	end
+
 
 	##############
 	# text files #

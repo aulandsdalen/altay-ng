@@ -99,3 +99,9 @@ canvas {
 .clear {
 	height: 1em;
 }
+.btn-restart {
+	margin-top: 10px;
+}
+#serviceName {
+	margin-top: 15px;
+}

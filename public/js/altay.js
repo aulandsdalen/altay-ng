@@ -9,14 +9,25 @@ var ram_line = new TimeSeries();
 cpuSmoothie.streamTo(document.getElementById("cpu_usage_graph"), 1000);
 ramSmoothie.streamTo(document.getElementById("ram_usage_graph"),1000);
 updateMeters();
+var cleanupInterval;
+cleanupInterval = window.setInterval(removeMessages, 3000);
 function rebootMachine() {
 	$.get("/reboot.action",function(data){
-		if(data.result === 'not authorized')
-			alert(data.human_readable);
+		display_alert(data.human_readable);
+	});
+}
+function restartService() {
+	post_data = {
+		service_name: document.getElementById("serviceName").value
+	}
+	$.post("/restartservice.action", post_data, function(data){
+		display_alert(data.human_readable);
 	});
 }
 function display_alert(text) {
-		$("body").prepend("<div id='alert'><p>"+ text +"</p></div>");
+		//$("body").prepend("<div id='alert'><p>"+ text +"</p></div>");
+		$(".container-fluid").prepend("<div id='message'><p class='message'>" + text + "</p></div>");
+		cleanupInterval = window.setInterval(removeMessages, 3000);
 }
 function getPermanentParameters() { //get and display static parameters once
 	$.getJSON("/system.json", function(data){
@@ -29,10 +40,11 @@ function getPermanentParameters() { //get and display static parameters once
 	});	
 }
 var updateMetersInterval = window.setInterval(updateMeters, 500); //update every 500 msec
-var cleanupInterval = window.setInterval(removeMessages, 3000);
 function removeMessages() {
-	message = document.getElementById('message');
-	message.remove();
+	if (document.getElementById('message') != null) {
+		message = document.getElementById('message');
+		message.remove();
+	}
 	clearInterval(cleanupInterval);
 }
 function updateMeters() {
@@ -57,3 +69,4 @@ function updateMeters() {
 cpuSmoothie.addTimeSeries(cpu_line, {lineWidth:2,strokeStyle:'#cccccc',fillStyle:'rgba(204,204,204,0.30)'});
 ramSmoothie.addTimeSeries(ram_line, {lineWidth:2,strokeStyle:'#cccccc',fillStyle:'rgba(204,204,204,0.30)'});
 document.getElementById("rebootAction").addEventListener('click', rebootMachine);
+document.getElementById("restartService").addEventListener('click', restartService);
