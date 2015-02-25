@@ -44,7 +44,7 @@ class OSAL
 			if Usagewatch.us_memused != 0
 				return Usagewatch.uw_memused
 			else
-				return rand(10) + 80
+				return 80
 			end
 		end
 	end
