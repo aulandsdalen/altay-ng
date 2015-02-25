@@ -41,7 +41,7 @@ class OSAL
 			return 45
 		end
 		if (/linux/ =~ RUBY_PLATFORM) != nil
-			if Usagewatch.us_memused != 0
+			if Usagewatch.uw_memused != 0
 				return Usagewatch.uw_memused
 			else
 				return 80
